@@ -8,9 +8,6 @@ env:
 matrix:
   include:
     - env:
-        - TOXENV=docs
-      python: '3.7'
-    - env:
         - TOXENV=py37,codecov
       python: '3.7'
     - env:
