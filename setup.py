@@ -49,8 +49,6 @@ setup(
         'Operating System :: POSIX',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Topic :: Utilities',
@@ -63,7 +61,7 @@ setup(
     keywords=[
         'search','single-agent search', 'pathfinding' 'sa-pathfinding', 'python-sa-pathfinding', 'pathfinder', 'grid search'
     ],
-    python_requires='>=3.5',
+    python_requires='>=3.7',
     install_requires=[
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
