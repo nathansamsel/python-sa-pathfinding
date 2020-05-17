@@ -10,7 +10,7 @@ Overview
     * - docs
       - |docs|
     * - tests
-      - | |travis| |appveyor| |requires|
+      - | |travis| |requires|
         | |codecov|
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
@@ -22,10 +22,6 @@ Overview
 .. |travis| image:: https://api.travis-ci.org/nathansamsel/python-sa-pathfinding.svg?branch=master
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/nathansamsel/python-sa-pathfinding
-
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/nathansamsel/python-sa-pathfinding?branch=master&svg=true
-    :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/nathansamsel/python-sa-pathfinding
 
 .. |requires| image:: https://requires.io/github/nathansamsel/python-sa-pathfinding/requirements.svg?branch=master
     :alt: Requirements Status
