@@ -189,20 +189,6 @@ def test_history_on_failure():
         assert 'expanded' in gastar.history['steps'][step]
         assert 'to_open' in gastar.history['steps'][step]
 
-def test_large_map():
-    """Test on large sized map.
-    """
-    env = OctileGrid(os.path.join(os.path.dirname(os.path.dirname(__file__)) + '/data/maps/large/brc202d.map'))
-    gastar = get_random_search(environment=env)
-    assert len(gastar.get_path()) >= 1
-
-def test_medium_map():
-    """Test on medium sized map.
-    """
-    env = OctileGrid(os.path.join(os.path.dirname(os.path.dirname(__file__)) + '/data/maps/medium/lak302d.map'))
-    gastar = get_random_search(environment=env)
-    assert len(gastar.get_path()) >= 1
-
 def test_small_map():
     """Test on small sized map.
     """

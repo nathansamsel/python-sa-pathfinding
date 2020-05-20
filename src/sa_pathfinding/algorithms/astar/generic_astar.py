@@ -4,7 +4,9 @@ import heapq
 from sa_pathfinding.algorithms.generics.search_node import SearchNode
 from sa_pathfinding.environments.generics.env import Environment
 from sa_pathfinding.algorithms.generics.search import Search
+from sa_pathfinding.environments.generics.state import State
 from sa_pathfinding.heuristics.heuristic import Heuristic
+
 
 
 class GenericAstar(Search):
@@ -41,7 +43,7 @@ class GenericAstar(Search):
                  verbose: bool = False):
         super().__init__(env, start=start, goal=goal, verbose=verbose)
         self._heuristic = heuristic
-        self._history['heuristic'] = str(self._heuristic.__class__)
+        self._history['heuristic'] = str(self._heuristic.name)
 
         self._open = []  # uses heapq
         self._closed = []  # just a list

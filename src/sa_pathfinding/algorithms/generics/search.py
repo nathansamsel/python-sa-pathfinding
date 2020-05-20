@@ -7,6 +7,8 @@ from sa_pathfinding.environments.grids.octile_grid import StateNotValidError
 from sa_pathfinding.algorithms.generics.search_node import SearchNode
 from sa_pathfinding.environments.generics.env import Environment
 
+# TODO(Nathan): Change start and goal in all searches to State, create the search node within the search
+
 
 class Search(ABC):
     """ An abstract class used to represent search algorithms generally.
