@@ -1,13 +1,12 @@
 [paths]
 source =
-   src/
+   src/sa_pathfinding
    */site-packages
 
 [run]
 branch = true
 source =
-    src/
-    tests/
+    tests
 parallel = true
 
 [report]
