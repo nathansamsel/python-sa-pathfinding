@@ -1,7 +1,9 @@
 [paths]
 source =
-   src/sa_pathfinding
-   */site-packages
+    src/sa_pathfinding
+    */site-packages
+omit =
+    src/sa_pathfinding/gui.py
 
 [run]
 branch = true
