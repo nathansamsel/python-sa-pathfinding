@@ -1,13 +1,15 @@
 [paths]
 source =
-   src
+   src/*
    */site-packages
 
 [run]
 branch = true
 source =
-    sa_pathfinding
+    src
     tests
+omit =
+    src/sa_pathfinding/gui.py
 parallel = true
 
 [report]
