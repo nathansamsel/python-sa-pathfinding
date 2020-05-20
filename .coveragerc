@@ -1,17 +1,13 @@
 [paths]
 source =
-   src/*
+   src/
    */site-packages
-omit =
-    src/sa_pathfinding/gui.py
 
 [run]
 branch = true
 source =
-    src/*
-    tests/*
-omit =
-    src/sa_pathfinding/gui.py
+    src/
+    tests/
 parallel = true
 
 [report]
@@ -19,4 +15,3 @@ show_missing = true
 precision = 2
 omit = 
     *migrations*
-    src/sa_pathfinding/gui.py
