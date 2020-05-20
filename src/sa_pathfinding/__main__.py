@@ -1,5 +1,5 @@
 """
-Entrypoint module, in case you use `python -msa-pathfinding`.
+Entrypoint module, in case you use `python -m sa-pathfinding`.
 
 
 Why does this file exist, and why __main__? For more info, read:

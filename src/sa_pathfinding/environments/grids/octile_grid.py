@@ -26,7 +26,7 @@ class OctileGrid(Grid):
         super().__init__(filename)
 
     def __repr__(self):
-        super().__repr__()
+        repr(super())
 
     def apply_action(self,
                      state: GridState,

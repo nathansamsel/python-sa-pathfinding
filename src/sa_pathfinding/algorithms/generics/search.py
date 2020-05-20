@@ -30,7 +30,7 @@ class Search(ABC):
     """
 
     __slots__ = '_env _start _goal _verbose ' \
-                '_nodes_expanded _path _success'.split()
+                '_nodes_expanded _path _success _history'.split()
 
     def __init__(self,
                  env: Environment,
@@ -59,6 +59,11 @@ class Search(ABC):
         else:
             raise StateNotValidError(goal.state)
 
+        self._history = {'start': repr(self._start.state),
+                        'goal': repr(self._goal.state),
+                        'nodes_expanded': self._nodes_expanded,
+                        'steps': {}}
+
         if self._verbose:
             print(f"Search initialized...")
             print(f"Start = {self._start}")
@@ -86,6 +91,10 @@ class Search(ABC):
     @property
     def verbose(self):
         return self._verbose
+    
+    @property
+    def history(self):
+        return self._history
 
     @abstractmethod
     def get_path(self) -> List[SearchNode]:

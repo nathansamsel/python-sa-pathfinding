@@ -4,7 +4,7 @@ from sa_pathfinding.environments.generics.env import Environment
 from sa_pathfinding.heuristics.heuristic import ZeroHeuristic
 
 
-class Dijkstra(GenericAstar):
+class GenericDijkstra(GenericAstar):
 
     def __init__(self,
                  env: Environment,

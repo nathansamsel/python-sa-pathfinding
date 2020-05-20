@@ -56,7 +56,7 @@ class GridOptimizedAstar(GenericAstar):
                          verbose=verbose)
     
     def __repr__(self) -> str:
-        rep = super().__repr__()
+        rep = repr(super())
         return rep
 
     def _add_to_open(self, node: SearchNode) -> None:

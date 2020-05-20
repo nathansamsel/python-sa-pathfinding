@@ -4,7 +4,7 @@ from sa_pathfinding.environments.grids.generics.grid import Grid
 from sa_pathfinding.heuristics.heuristic import ZeroHeuristic
 
 
-class Dijkstra(GridOptimizedAstar):
+class GridOptimizedDijkstra(GridOptimizedAstar):
 
     def __init__(self,
                  env: Grid,

@@ -31,7 +31,7 @@ class GenericAstar(Search):
 
     """
 
-    __slots__ = '_open _closed _heuristic _history'.split()
+    __slots__ = '_open _closed _heuristic'.split()
 
     def __init__(self,
                  env: Environment,
@@ -39,12 +39,9 @@ class GenericAstar(Search):
                  start: SearchNode = None,
                  goal: SearchNode = None,
                  verbose: bool = False):
-        super().__init__(env, start, goal, verbose)
+        super().__init__(env, start=start, goal=goal, verbose=verbose)
         self._heuristic = heuristic
-
-        self._history = {'start': repr(self._start.state),
-                         'goal': repr(self._goal.state),
-                         'heuristic': self._heuristic.__class__}
+        self._history['heuristic'] = str(self._heuristic.__class__)
 
         self._open = []  # uses heapq
         self._closed = []  # just a list
@@ -59,14 +56,10 @@ class GenericAstar(Search):
         self._add_to_open(self._start)
 
     def __repr__(self) -> str:
-        rep = super().__repr__()
+        rep = repr(super())
         if not self._heuristic.name == 'NONE':
             rep += 'Heuristic: ' + self._heuristic.name
         return rep
-    
-    @property
-    def history(self):
-        return self._history
 
     @property
     def open(self):
@@ -88,7 +81,7 @@ class GenericAstar(Search):
     def _is_on_open(self, node: SearchNode) -> bool:
         return self._is_on_list(node, self._open)
 
-    def _is_on_closed(self, node: SearchNode):
+    def _is_on_closed(self, node: SearchNode) -> bool:
         return self._is_on_list(node, self._closed)
 
     @staticmethod
@@ -138,6 +131,7 @@ class GenericAstar(Search):
         node = self._remove_best()
         self._add_to_closed(node)
         self._nodes_expanded += 1
+        self.history['nodes_expanded'] = self._nodes_expanded
 
         # Goal Check
         # This needs to happen after the node has been selected as the lowest
@@ -146,10 +140,10 @@ class GenericAstar(Search):
         # expansion of its parent.
         if node == self.goal:
             self._success = True
-            self._history['nodes_expanded'] = self._nodes_expanded
             # re-create path by following parents from goal to start
             self._path.append(node.state)
-            while node != self._start:
+            # start has None as parent, so walk back until that None parent is hit
+            while node.parent is not None:
                 node = node.parent
                 self._path.append(node.state)
             self._path = list(reversed(self._path))
@@ -217,9 +211,9 @@ class GenericAstar(Search):
                     self._open.pop()
                     heapq.heapify(self._open)
                     self._add_to_open(new_node)
-        self._history[f"step-{self._nodes_expanded}"] = {}
-        self._history[f"step-{self._nodes_expanded}"]['expanded'] = repr(node)
-        self._history[f"step-{self._nodes_expanded}"]['to_open'] = repr(to_open)
+        self._history['steps'][f"step-{self._nodes_expanded}"] = {}
+        self._history['steps'][f"step-{self._nodes_expanded}"]['expanded'] = repr(node)
+        self._history['steps'][f"step-{self._nodes_expanded}"]['to_open'] = repr(to_open)
         return node, to_open
 
     def get_path(self) -> List[SearchNode]:

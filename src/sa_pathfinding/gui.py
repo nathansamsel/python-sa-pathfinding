@@ -5,7 +5,11 @@ import math
 import os
 
 from sa_pathfinding.algorithms.astar.grid_optimized_astar import GridOptimizedAstar
-from sa_pathfinding.algorithms.dijkstra.grid_optimized_dijkstra import Dijkstra
+from sa_pathfinding.algorithms.dijkstra.grid_optimized_dijkstra import GridOptimizedDijkstra
+from sa_pathfinding.algorithms.astar.generic_astar import GenericAstar
+from sa_pathfinding.algorithms.dijkstra.generic_dijkstra import GenericDijkstra
+from sa_pathfinding.algorithms.bfs.generic_bfs import GenericBFS
+from sa_pathfinding.algorithms.dfs.generic_dfs import GenericDFS
 from sa_pathfinding.heuristics.grid_heuristic import ManhattanGridHeuristic
 from sa_pathfinding.heuristics.grid_heuristic import EuclideanGridHeuristic
 from sa_pathfinding.environments.grids.octile_grid import StateNotValidError
@@ -50,7 +54,7 @@ class AppFrame(ttk.Frame):
         self.label2 = ttk.Label(self, text="Search Algorithm:")
         self.label3 = ttk.Label(self, text='Heuristic:')
 
-        search_list = ['A*', 'Dijkstra']
+        search_list = ['Generic A*', 'Grid Optimized A*', 'Generic Dijkstra', 'Grid Optomized Dijkstra', 'BFS', 'DFS']
         self.combo1 = ttk.Combobox(self, state='readonly', values=search_list)
         self.combo1.set(search_list[0])
 
@@ -255,8 +259,8 @@ class SearchVizApp(tk.Tk):
         node, open_list = self.search.step()
         self.app_frame.label4['text'] = 'Nodes Expanded: ' + str(
             self.search.nodes_expanded)
-        self.app_frame.label5['text'] = 'Open List Size: ' + str(
-            len(self.search.open))
+        # self.app_frame.label5['text'] = 'Open List Size: ' + str(
+        #     len(self.search.open))
         if node is None:
             if isinstance(open_list, list):
                 path = list(reversed(open_list))
@@ -309,11 +313,20 @@ class SearchVizApp(tk.Tk):
     def pressed_start(self) -> None:
         if self.start is None or self.goal is None:
             raise Exception('Search started without start / goal')
-        search = 'astar'
+        search = 'gas'
+        if self.app_frame.combo1.get() == 'Generic Dijkstra':
+            search = 'gd'
+        elif self.app_frame.combo1.get() == 'Grid Optimized Dijkstra':
+            search = 'god'
+        elif self.app_frame.combo1.get() == 'Grid Optimized A*':
+            search = 'goas'
+        elif self.app_frame.combo1.get() == 'BFS':
+            search = 'bfs'
+        elif self.app_frame.combo1.get() == 'DFS':
+            search = 'dfs'
+        
         heuristic = OctileGridHeuristic()
-        if self.app_frame.combo1.get() == 'Dijkstra':
-            search = 'dijkstra'
-        elif self.app_frame.combo2.get() == 'Manhattan Distance':
+        if self.app_frame.combo2.get() == 'Manhattan Distance':
             heuristic = ManhattanGridHeuristic()
         elif self.app_frame.combo2.get() == 'Euclidean Distance':
             heuristic = EuclideanGridHeuristic()
@@ -325,14 +338,35 @@ class SearchVizApp(tk.Tk):
             raise StateNotValidError(self.goal.state)
         else:
             self.goal.state._valid = True
-        if search == 'astar':
-            self.search = GridOptimizedAstar(self.env,
+        if search == 'gas':
+            self.search = GenericAstar(self.env,
                                              start=self.start,
                                              goal=self.goal,
                                              heuristic=heuristic,
                                              verbose=self.verbose)
-        else:
-            self.search = Dijkstra(self.env,
+        elif search == 'gd':
+            self.search = GenericDijkstra(self.env,
+                                   start=self.start,
+                                   goal=self.goal,
+                                   verbose=self.verbose)
+        elif search == 'god':
+            self.search = GridOptimizedDijkstra(self.env,
+                                   start=self.start,
+                                   goal=self.goal,
+                                   verbose=self.verbose)
+        elif search == 'goas':
+            self.search = GridOptimizedAstar(self.env,
+                                   start=self.start,
+                                   goal=self.goal,
+                                   heuristic=heuristic,
+                                   verbose=self.verbose)
+        elif search == 'bfs':
+            self.search = GenericBFS(self.env,
+                                   start=self.start,
+                                   goal=self.goal,
+                                   verbose=self.verbose)
+        elif search == 'dfs':
+            self.search = GenericDFS(self.env,
                                    start=self.start,
                                    goal=self.goal,
                                    verbose=self.verbose)

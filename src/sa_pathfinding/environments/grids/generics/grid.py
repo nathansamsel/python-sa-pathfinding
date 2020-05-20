@@ -11,6 +11,10 @@ from sa_pathfinding.environments.generics.env import Action
 
 class Grid(Environment):
 
+    # TODO(Nathan): write a script to remove top meta info about the maps (file is only map data)
+    # TODO(Nathan): add boolean 2d-array as option to create map from
+    # TODO(Nathan): default should be 2d-array unless filename provided
+
     def __init__(self, filename: str) -> None:
         # open map file
         file = open(filename, "r")
@@ -37,6 +41,9 @@ class Grid(Environment):
                 self._env[y].append(GridState(x, y, valid=passable))
 
     def __str__(self) -> str:
+        return str(self._width) + 'x' + str(self._height)
+
+    def print(self) -> None:
         line = ''
         for y in range(self._height):
             for x in range(self._width):
