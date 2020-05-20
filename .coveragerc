@@ -1,6 +1,6 @@
 [paths]
 source =
-   src
+   src/*
    */site-packages
 omit =
     src/sa_pathfinding/gui.py
@@ -8,8 +8,8 @@ omit =
 [run]
 branch = true
 source =
-    src
-    tests
+    src/*
+    tests/*
 omit =
     src/sa_pathfinding/gui.py
 parallel = true
