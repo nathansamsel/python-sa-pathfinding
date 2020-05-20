@@ -10,11 +10,14 @@ from sa_pathfinding.heuristics.grid_heuristic import OctileGridHeuristic
 from sa_pathfinding.algorithms.astar.generic_astar import GenericAstar
 from sa_pathfinding.algorithms.generics.search_node import SearchNode
 from sa_pathfinding.environments.grids.octile_grid import OctileGrid
+from sa_pathfinding.environments.generics.env import Environment
+from sa_pathfinding.heuristics.heuristic import Heuristic
 
 
 env = OctileGrid(os.path.join(os.path.dirname(os.path.dirname(__file__)) + '/data/maps/small/den403d.map'))
 
-def get_random_search(environment=env, heuristic=OctileGridHeuristic()) -> GenericAstar:
+def get_random_search(environment: Environment=env, 
+                    heuristic: Heuristic=OctileGridHeuristic()) -> GenericAstar:
     start = environment.get_random(valid=True)
     goal = environment.get_random(valid=True)
     gastar = GenericAstar(environment,
@@ -24,7 +27,7 @@ def get_random_search(environment=env, heuristic=OctileGridHeuristic()) -> Gener
     return gastar
 
 
-def test_impassable_goal():
+def test_invalid_goal():
     """Try to create search with goal node that is not passable"""
     bad_goal = env.get_random(valid=False)
     with pytest.raises(StateNotValidError):
@@ -190,7 +193,7 @@ def test_history_on_failure():
         assert 'to_open' in gastar.history['steps'][step]
 
 def test_small_map():
-    """Test on small sized map.
+    """Test on small sized map. Large sizes can fail on travis.ci due to timeout.
     """
     env = OctileGrid(os.path.join(os.path.dirname(os.path.dirname(__file__)) + '/data/maps/small/den403d.map'))
     gastar = get_random_search(environment=env)

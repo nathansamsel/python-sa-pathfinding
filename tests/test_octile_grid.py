@@ -54,4 +54,9 @@ def test_grid_apply_action():
 
 
 def test_grid_get_actions():
-    pass
+    middle_state = GridState(18, 23, valid=True)
+    action_cost_tuples = env.get_actions(middle_state, None)
+    actions = [OctileGridAction.UP, OctileGridAction.DOWN, OctileGridAction.LEFT, OctileGridAction.RIGHT, 
+                OctileGridAction.DOWN_LEFT, OctileGridAction.DOWN_RIGHT, OctileGridAction.UP_LEFT, OctileGridAction.UP_RIGHT]
+    for action, _ in action_cost_tuples:
+        assert action in actions
