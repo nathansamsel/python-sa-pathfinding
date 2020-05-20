@@ -184,31 +184,26 @@ class GenericAstar(Search):
                                                       self.goal.state)
             new_node.fcost = new_node.gcost + new_node.hcost
 
-            # if its already been expanded, then it was expanded with lowest
-            # f-cost, so a shortest path cannot be found by visiting
-            # the node through a higher f-cost parent - a.k.a safe to skip
-            if self._is_on_closed(new_node):
-                continue
-
-            # if its not on open (Status: UNDISCOVRED)
-            # add it to both open and the list to be returned
-            if not self._is_on_open(new_node):
-                self._add_to_open(new_node)
-                to_open.append(new_node)
+            is_on_open, index = self._is_on_open_w_index(new_node)
+            if not is_on_open:
+                # if node is not on open, its either
+                # undiscovered or expanded already and on closed
+                # safe to skip if on closed because it was chosen
+                # for expansion and added to closed with the lowest f-cost
+                # so a shorter path to that state does not exist
+                if not self._is_on_closed(new_node):
+                    self._add_to_open(new_node)
+                    to_open.append(new_node)
             else:
-                # otherwise it is on open, so find the index
-                is_on_open, index = self._is_on_open_w_index(new_node)
-                if not is_on_open:
-                    raise Exception('Status = ON_OPEN, but not found on open.')
-
-                # update cost if found on open with a higher cost
-                # this means we found a path through this node with a better
-                # cost than we had previously found
-                elif new_node.fcost < self._open[index].fcost:
+                # if found on open, means different path to same state was found
+                # check cost to see if found a shorter path to that state
+                if new_node.fcost < self._open[index].fcost:
                     # if we need to update cost
                     # then it needs to be removed from heap
                     # the heap property needs to be restored (heapify)
                     # then it needs to be added again
+                    # due to the heap being sorted on f-cost
+                    # and this forces a change to f-cost
                     self._open[index] = self._open[-1]
                     self._open.pop()
                     heapq.heapify(self._open)
