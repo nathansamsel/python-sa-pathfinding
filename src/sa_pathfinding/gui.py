@@ -256,29 +256,28 @@ class SearchVizApp(tk.Tk):
                 text="G")
 
     def draw_step(self) -> None:
-        node, open_list = self.search.step()
-        self.app_frame.label4['text'] = 'Nodes Expanded: ' + str(
-            self.search.nodes_expanded)
-        # self.app_frame.label5['text'] = 'Open List Size: ' + str(
-        #     len(self.search.open))
-        if node is None:
-            if isinstance(open_list, list):
-                path = list(reversed(open_list))
+        try:
+            node, open_list = next(self.search.step())
+            self.app_frame.label4['text'] = 'Nodes Expanded: ' + str(
+                self.search.nodes_expanded)
+            self.app_frame.label5['text'] = 'Open List Size: ' + str(
+                len(self.search.open))
+
+            if node != self.search.start:
+                self.app_frame.canvas.itemconfigure(self._rects[node.state.y][node.state.x],
+                                                    fill='red')
+            for node in open_list:
+                if node != self.search.goal:
+                    self.app_frame.canvas.itemconfigure(self._rects[node.state.y][node.state.x],
+                                                        fill='green')
+            self.after(1, self.draw_step)
+        except StopIteration:
+            if len(self.search.path) > 0:
+                path = list(reversed(self.search.path))
                 self.draw_path(path)
-                return
             else:
                 if self.verbose:
                     print("Search Failed to return a path.")
-                return
-
-        if node != self.search.start:
-            self.app_frame.canvas.itemconfigure(self._rects[node.state.y][node.state.x],
-                                                fill='red')
-        for node in open_list:
-            if node != self.search.goal:
-                self.app_frame.canvas.itemconfigure(self._rects[node.state.y][node.state.x],
-                                                    fill='green')
-        self.after(1, self.draw_step)
 
     def draw_path(self, path: list) -> None:
         if len(path) == 0:
