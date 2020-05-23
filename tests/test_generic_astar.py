@@ -5,8 +5,8 @@ import os
 from sa_pathfinding.algorithms.astar.grid_optimized_astar import GridOptimizedAstar
 from sa_pathfinding.environments.grids.octile_grid import StateDoesNotExistError
 from sa_pathfinding.environments.grids.octile_grid import StateNotValidError
-from sa_pathfinding.environments.grids.generics.grid_state import GridState
 from sa_pathfinding.heuristics.grid_heuristic import OctileGridHeuristic
+from sa_pathfinding.environments.grids.generics.grid  import GridState
 from sa_pathfinding.algorithms.astar.generic_astar import GenericAstar
 from sa_pathfinding.algorithms.generics.search_node import SearchNode
 from sa_pathfinding.environments.grids.octile_grid import OctileGrid

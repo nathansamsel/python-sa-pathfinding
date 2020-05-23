@@ -7,11 +7,11 @@ source =
     src
     tests
 parallel = true
-omit = src/sa_pathfinding/gui.py
+omit = */src/sa_pathfinding/gui.py
 
 [report]
 show_missing = true
 precision = 2
 omit = 
     *migrations*
-    src/sa_pathfinding/gui.py
+    */src/sa_pathfinding/gui.py

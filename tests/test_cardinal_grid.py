@@ -2,13 +2,12 @@ import pytest
 import os
 
 from sa_pathfinding.environments.grids.octile_grid import StateDoesNotExistError
-from sa_pathfinding.environments.grids.octile_grid import StateNotValidError
-from sa_pathfinding.environments.grids.generics.grid_state import GridState
 from sa_pathfinding.environments.grids.cardinal_grid import CardinalGridAction
+from sa_pathfinding.environments.grids.octile_grid import StateNotValidError
 from sa_pathfinding.environments.grids.cardinal_grid import CardinalGrid
+from sa_pathfinding.environments.grids.generics.grid import GridState
 
 env = CardinalGrid(os.path.join(os.path.dirname(__file__))[:-5] + '/data/maps/small/den403d.map')
-
 
 def test_grid_state_passable():
     passable_state = GridState(18, 10)

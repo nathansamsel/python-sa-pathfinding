@@ -1,9 +1,9 @@
 import pytest
 import os
 
-from sa_pathfinding.environments.grids.octile_grid import OctileGrid
-from sa_pathfinding.environments.grids.generics.grid_state import GridState
+from sa_pathfinding.environments.grids.generics.grid import GridState
 from sa_pathfinding.algorithms.generics.search_node import SearchNode
+from sa_pathfinding.environments.grids.octile_grid import OctileGrid
 from sa_pathfinding.algorithms.bfs.generic_bfs import GenericBFS
 
 env = OctileGrid(os.path.join(os.path.dirname(os.path.dirname(__file__)) + '/data/maps/small/den403d.map'))

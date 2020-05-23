@@ -16,7 +16,8 @@ def speed_diff():
     generic_astar = GenericAstar(environment, 
                                 heuristic=OctileGridHeuristic(), 
                                 start=SearchNode(start), 
-                                goal=SearchNode(goal))
+                                goal=SearchNode(goal),
+                                verbose=True)
     gridopt_astar = GridOptimizedAstar(environment, 
                                         heuristic=OctileGridHeuristic(), 
                                         start=SearchNode(start), 

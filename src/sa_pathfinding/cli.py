@@ -22,13 +22,19 @@ import time
 import sys
 import os
 
-from sa_pathfinding.environments.grids.octile_grid import OctileGrid
-from sa_pathfinding.algorithms.generics.search_node import SearchNode
-from sa_pathfinding.heuristics.grid_heuristic import OctileGridHeuristic
-from sa_pathfinding.environments.grids.generics.grid_state import GridState
-from sa_pathfinding.algorithms.astar.generic_astar import GenericAstar
+from sa_pathfinding.environments.towers_of_hanoi.towers_of_hanoi import TowersOfHanoi
 from sa_pathfinding.algorithms.astar.grid_optimized_astar import GridOptimizedAstar
+from sa_pathfinding.environments.towers_of_hanoi.towers_of_hanoi import TOHAction
+from sa_pathfinding.environments.towers_of_hanoi.towers_of_hanoi import TOHState
+from sa_pathfinding.algorithms.dijkstra.generic_dijkstra import GenericDijkstra
+from sa_pathfinding.heuristics.grid_heuristic import OctileGridHeuristic
+from sa_pathfinding.algorithms.astar.generic_astar import GenericAstar
+from sa_pathfinding.algorithms.generics.search_node import SearchNode
+from sa_pathfinding.environments.grids.generics.grid import GridState
+from sa_pathfinding.environments.grids.octile_grid import OctileGrid
 from sa_pathfinding.environments.generics.env import Environment
+from sa_pathfinding.algorithms.bfs.generic_bfs import GenericBFS
+from sa_pathfinding.algorithms.dfs.generic_dfs import GenericDFS
 from sa_pathfinding.environments.generics.state import State
 from sa_pathfinding.algorithms.generics.search import Search
 
@@ -36,6 +42,16 @@ verbose: bool = False
 filepath = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/data/maps/large/brc202d.map')
 
 def main(argv=sys.argv):
+  print('running...')
+
+  toh = TowersOfHanoi(3, 5, start_peg=0, end_peg=2)
+  start = toh.create_start_state()
+  goal = toh.create_goal_state()
+  dij = GenericDijkstra(toh, start=SearchNode(start), goal=SearchNode(goal))
+  for _, _ in dij.step():
+    pass
+  print(dij.path)
+
   args = _parse_args()
   _execute_args(args)
   return 0
@@ -72,6 +88,7 @@ def speed_test(env: Environment,
               start: State=None, 
               goal: State=None, 
               heuristic=None) -> Tuple[float, float]:
+
   if start is None:
     start = env.get_random(valid=True)
   

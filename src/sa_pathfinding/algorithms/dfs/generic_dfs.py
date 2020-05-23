@@ -12,5 +12,6 @@ class GenericDFS(GenericBFS):
                 goal: SearchNode=None, 
                 verbose: bool=False):
         super().__init__(env=env, start=start, goal=goal)
-        self._open = queue.LifoQueue()
-        self._open.put(self._start)
+    
+    def _remove_from_open(self):
+        return self._open.pop(len(self._open) - 1)

@@ -12,19 +12,19 @@ class GenericBFS(Search):
                 goal: SearchNode,
                 verbose: bool=False):
         super().__init__(env, start=start, goal=goal, verbose=verbose)
-        self._open = queue.Queue()
-        self._open.put(self._start)
+        self._open = []
+        self._open.append(self._start)
     
     def _add_to_open(self, new_node: SearchNode) -> None:
-        self._open.put(new_node)
+        self._open.append(new_node)
 
-    def _pull_from_open(self) -> SearchNode:
-        return self._open.get()
+    def _remove_from_open(self) -> SearchNode:
+        return self._open.pop(0)
     
     def step(self):
-        while not self._open.empty():
+        while len(self._open) > 0:
             
-            node = self._pull_from_open()
+            node = self._remove_from_open()
 
             self._nodes_expanded += 1
             self.history['nodes_expanded'] = self._nodes_expanded
@@ -60,7 +60,7 @@ class GenericBFS(Search):
                 new_state = self._env.apply_action(node.state, action)
                 new_node = SearchNode(new_state,
                                     parent=node)
-                self._open.put(new_node)
+                self._add_to_open(new_node)
                 to_open.append(new_node)
             
             self._history['steps'][f"step-{self._nodes_expanded}"] = {}

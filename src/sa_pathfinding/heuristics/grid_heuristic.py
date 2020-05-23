@@ -1,6 +1,6 @@
 import math
 
-from sa_pathfinding.environments.grids.generics.grid_state import GridState
+from sa_pathfinding.environments.grids.generics.grid import GridState
 from sa_pathfinding.heuristics.heuristic import Heuristic
 
 

@@ -19,7 +19,7 @@ class StateNotValidError(Exception):
         self.message = f"State {state} is not valid."
 
 
-class Action(Enum):
+class Action(ABC):
     pass
 
 

@@ -3,8 +3,8 @@ import os
 
 from sa_pathfinding.environments.grids.octile_grid import StateDoesNotExistError
 from sa_pathfinding.environments.grids.octile_grid import StateNotValidError
-from sa_pathfinding.environments.grids.generics.grid_state import GridState
 from sa_pathfinding.environments.grids.octile_grid import OctileGridAction
+from sa_pathfinding.environments.grids.generics.grid import GridState
 from sa_pathfinding.environments.grids.octile_grid import OctileGrid
 
 env = OctileGrid(os.path.join(os.path.dirname(__file__))[:-5] + '/data/maps/small/den403d.map')

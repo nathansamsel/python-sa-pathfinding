@@ -3,10 +3,47 @@ from typing import Tuple
 from typing import List
 import random
 
-from sa_pathfinding.environments.grids.generics.grid_state import GridState
 from sa_pathfinding.environments.generics.env import StateDoesNotExistError
 from sa_pathfinding.environments.generics.env import Environment
+from sa_pathfinding.environments.generics.state import State
 from sa_pathfinding.environments.generics.env import Action
+
+
+class GridState(State):
+
+    def __init__(self, x: int, y: int, valid: bool = False):
+        self._x = x
+        self._y = y
+        self._valid = valid
+
+    def __str__(self) -> str:
+        return str(self._x) + ', ' + str(self._y)
+
+    def __repr__(self) -> str:
+        return '<' + self.__str__() + '>'
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+        return self._x == other._x and self._y == other._y
+
+    def __ne__(self, other) -> bool:
+        return not self.__eq__(other)
+
+    def get_state(self) -> (int, int):
+        return self._x, self._y, self._valid
+
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y
+
+    @property
+    def valid(self):
+        return self._valid
 
 
 class Grid(Environment):

@@ -4,19 +4,19 @@ import tkinter as tk
 import math
 import os
 
-from sa_pathfinding.algorithms.astar.grid_optimized_astar import GridOptimizedAstar
 from sa_pathfinding.algorithms.dijkstra.grid_optimized_dijkstra import GridOptimizedDijkstra
-from sa_pathfinding.algorithms.astar.generic_astar import GenericAstar
+from sa_pathfinding.algorithms.astar.grid_optimized_astar import GridOptimizedAstar
 from sa_pathfinding.algorithms.dijkstra.generic_dijkstra import GenericDijkstra
-from sa_pathfinding.algorithms.bfs.generic_bfs import GenericBFS
-from sa_pathfinding.algorithms.dfs.generic_dfs import GenericDFS
+from sa_pathfinding.environments.grids.octile_grid import StateNotValidError
 from sa_pathfinding.heuristics.grid_heuristic import ManhattanGridHeuristic
 from sa_pathfinding.heuristics.grid_heuristic import EuclideanGridHeuristic
-from sa_pathfinding.environments.grids.octile_grid import StateNotValidError
 from sa_pathfinding.heuristics.grid_heuristic import OctileGridHeuristic
-from sa_pathfinding.environments.grids.octile_grid import OctileGrid
-from sa_pathfinding.environments.grids.generics.grid_state import GridState
+from sa_pathfinding.algorithms.astar.generic_astar import GenericAstar
+from sa_pathfinding.environments.grids.generics.grid import GridState
 from sa_pathfinding.algorithms.generics.search_node import SearchNode
+from sa_pathfinding.environments.grids.octile_grid import OctileGrid
+from sa_pathfinding.algorithms.bfs.generic_bfs import GenericBFS
+from sa_pathfinding.algorithms.dfs.generic_dfs import GenericDFS
 
 
 class AppFrame(ttk.Frame):
@@ -258,18 +258,14 @@ class SearchVizApp(tk.Tk):
     def draw_step(self) -> None:
         try:
             node, open_list = next(self.search.step())
-            self.app_frame.label4['text'] = 'Nodes Expanded: ' + str(
-                self.search.nodes_expanded)
-            self.app_frame.label5['text'] = 'Open List Size: ' + str(
-                len(self.search.open))
+            self.app_frame.label4['text'] = 'Nodes Expanded: ' + str(self.search.nodes_expanded)
+            self.app_frame.label5['text'] = 'Open List Size: ' + str(len(self.search.open))
 
             if node != self.search.start:
-                self.app_frame.canvas.itemconfigure(self._rects[node.state.y][node.state.x],
-                                                    fill='red')
+                self.app_frame.canvas.itemconfigure(self._rects[node.state.y][node.state.x], fill='red')
             for node in open_list:
                 if node != self.search.goal:
-                    self.app_frame.canvas.itemconfigure(self._rects[node.state.y][node.state.x],
-                                                        fill='green')
+                    self.app_frame.canvas.itemconfigure(self._rects[node.state.y][node.state.x], fill='green')
             self.after(1, self.draw_step)
         except StopIteration:
             if len(self.search.path) > 0:

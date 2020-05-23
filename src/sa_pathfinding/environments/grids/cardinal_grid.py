@@ -1,9 +1,10 @@
 from typing import Tuple
 from typing import List
 
-from sa_pathfinding.environments.grids.generics.grid_state import GridState
+
 from sa_pathfinding.environments.generics.env import StateDoesNotExistError
 from sa_pathfinding.environments.generics.env import StateNotValidError
+from sa_pathfinding.environments.grids.generics.grid import GridState
 from sa_pathfinding.environments.grids.generics.grid import Grid
 from sa_pathfinding.environments.generics.env import Action
 
