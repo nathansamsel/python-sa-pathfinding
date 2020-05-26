@@ -16,12 +16,6 @@ class GridState(State):
         self._y = y
         self._valid = valid
 
-    def __str__(self) -> str:
-        return str(self._x) + ', ' + str(self._y)
-
-    def __repr__(self) -> str:
-        return '<' + self.__str__() + '>'
-
     def __eq__(self, other) -> bool:
         if not isinstance(other, self.__class__):
             return NotImplemented
@@ -29,6 +23,12 @@ class GridState(State):
 
     def __ne__(self, other) -> bool:
         return not self.__eq__(other)
+    
+    def __str__(self) -> str:
+        return str(self._x) + ', ' + str(self._y)
+
+    def __repr__(self) -> str:
+        return '<' + self.__str__() + '>'
 
     def get_state(self) -> (int, int):
         return self._x, self._y, self._valid
@@ -80,14 +80,6 @@ class Grid(Environment):
     def __str__(self) -> str:
         return str(self._width) + 'x' + str(self._height)
 
-    def print(self) -> None:
-        line = ''
-        for y in range(self._height):
-            for x in range(self._width):
-                line += '\u2591' if self._env[y][x].valid else '\u2588'
-            line += '\n'
-        return line
-
     def is_defined(self, state: GridState) -> bool:
         if state.x > self._width - 1 or state.x < 0 or \
            state.y > self._height - 1 or state.y < 0:
@@ -99,6 +91,14 @@ class Grid(Environment):
         if not self.is_defined(state):
             raise StateDoesNotExistError(state)
         return self._env[state.y][state.x].valid
+
+    def print(self) -> None:
+        line = ''
+        for y in range(self._height):
+            for x in range(self._width):
+                line += '\u2591' if self._env[y][x].valid else '\u2588'
+            line += '\n'
+        return line
 
     def get_random(self, valid: bool = True) -> GridState:
         x = random.randint(0, self._width - 1)

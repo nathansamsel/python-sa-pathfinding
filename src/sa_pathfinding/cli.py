@@ -44,13 +44,11 @@ filepath = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__
 def main(argv=sys.argv):
   print('running...')
 
-  toh = TowersOfHanoi(3, 5, start_peg=0, end_peg=2)
-  start = toh.create_start_state()
-  goal = toh.create_goal_state()
-  dij = GenericDijkstra(toh, start=SearchNode(start), goal=SearchNode(goal))
-  for _, _ in dij.step():
-    pass
-  print(dij.path)
+  toh = TowersOfHanoi(4, 3)
+
+  dij = GenericBFS(toh, start=SearchNode(toh.start), goal=SearchNode(toh.goal))
+  dij.get_path()
+  print(dij.history)
 
   args = _parse_args()
   _execute_args(args)
