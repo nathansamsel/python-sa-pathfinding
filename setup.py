@@ -24,10 +24,10 @@ def read(*names, **kwargs):
 
 
 setup(
-    name='sa_pathfinding',
+    name='sa-pathfinding',
     version='0.1',
     license='MIT',
-    description='A python utility to execute single-agent searches on environments',
+    description='A Python utility to execute single-agent search algorithms and represent search environments.',
     long_description='%s\n%s' % (
         re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.rst')),
         re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))
