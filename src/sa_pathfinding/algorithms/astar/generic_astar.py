@@ -7,30 +7,75 @@ from sa_pathfinding.algorithms.generics.search import Search
 from sa_pathfinding.environments.generics.state import State
 from sa_pathfinding.heuristics.heuristic import Heuristic
 
+"""generic_astar Module
+
+This module contains the implementation for the A* algorithm.
+
+The below example has not been implemented yet. coming soon...
+
+Example:
+    The module can be run from the command line to execute an A* search.
+    The command line args are the same as the parameters for the
+    GenericAstar object. The result is a string representation of the
+    path that was found - a comma separated list of state __repr__() calls::
+
+        $ python generic_astar.py OctileGrid('path/to/file')
+        $ python generic_astar.py OctileGrid('path/to/file') start=GridState(43, 65)
+        $ python generic_astar.py OctileGrid('path/to/file') goal=GridState(43, 65)
+        $ python generic_astar.py OctileGrid('path/to/file') start=GridState(43, 65) goal=GridState(132, 94)
+        $ python generic_astar.py OctileGrid('path/to/file') start=GridState(43, 65) goal=GridState(132, 94) heuristic=OctileGridHeuristic
+
+Todo:
+    * implement logging solutions for debug printing/to file and history tracking to console / to file
+    * implement the module level command line interface
+    * redo GenericAstar and Search __repr__
+"""
 
 
 class GenericAstar(Search):
-    """ A class to represent the A* search algorithm.
+    """ This class implements the A* search algorithm.
 
-    Note:
+    By default, the open and closed lists are both simple lists. The open list
+    is maintained as a heap using heapq, sorted on f-cost with ties broken to
+    high g-cost. This means that cost of removing the best node from the open
+    list on each step is O(lg(n)). Both lists are checked for membership in 
+    O(n) time using the env state __eq__() in a loop.
+    
+    The open and closed lists are checked for membership
+    via the _is_on_open() and _is_on_closed() methods. If you define a 
+    custom environment and can structure the open and closed list checks
+    in a way that beats O(n) checks, then extend GenericAstar by inheriting
+    from it and overriding the above methods to optimize an A* 
+    implementation for your environment. An example of this is
+    GridOptimizedAstar where a 2d status structure was added as
+    an effective overlay on the grids such that indexes align with grid
+    positions, creating constant time checks for both lists.
+
+    All attributes are read-only properties.
 
     Attributes:
-        env (:obj:'Grid'): A class that represents the environment being
+        closed (:obj:'list' of :obj:'State'): The closed list for the A* search algorithm.
+        env (:obj:'Environment'): A class that represents the environment being
             being searched.
-        start (:obj:'Node', optional): A class that represent the node to start
-            the search from. The default is a random passable node from the
-            provided 'env'.
-        goal (:obj:'Node', optional): A class that represents the node to search
+        goal (:obj:'Node'): A class that represents the node to search
             to. The default is a random passable node from the provided 'env'.
-        heuristic(:enum:'Heuristic', optional): An enum that represents the
+        heuristic (:obj:'Heuristic'): A class that represents the
             chosen heuristic to run the search with. The default is the octile
             distance heuristic. Pre-supported heuristics include: octile
             distance, manhattan distance, and euclidean distance.
-        verbose(:obj:'bool', optional): A boolean flag that, when true, enables
-            the printing of information about the search as it runs.
-
-
-
+        history (:obj:'dict'): A dictionary of documentary info on the
+            execution of the search.
+        nodes_expanded (:obj:'int'): Number of nodes expanded in the search.
+        open (:obj:'list' of :obj:'State'): The open list for the A* search algorithm.
+        path (:obj:'list' of :obj:'State'): The path returned by the execution of the search. It
+            is empty by default and is empty if the search fails.
+        start (:obj:'Node'): A class that represent the node to start
+            the search from. The default is a random passable node from the
+            provided 'env'.
+        success (:obj:'bool'): A boolean flag set at the end of search execution,
+            where true indicates search success and false indicates failure
+        verbose (:obj:'bool'): A boolean flag that, when true, enables 
+            the printing of information about the search as it runs. 
     """
 
     __slots__ = '_open _closed _heuristic'.split()
@@ -38,24 +83,38 @@ class GenericAstar(Search):
     def __init__(self,
                  env: Environment,
                  heuristic: Heuristic,
-                 start: SearchNode = None,
-                 goal: SearchNode = None,
+                 start: State = None,
+                 goal: State = None,
                  verbose: bool = False):
+        """GenericAstar __init__ method.
+
+        Attributes env, start, goal, nodes_expanded, path, success, verbose
+        are instantiated in parent class Search __init__.
+
+        The start node is assigned initial costs and added to open.
+
+        Args:
+            env (:obj:'Environment'): Environment being being searched.
+            start (:obj:`State`, optional): State to start search from.
+            goal (:obj:`State`): State to search to.
+            verbose (:obj:'bool'): Flag for verbose printing.
+        """
         super().__init__(env, start=start, goal=goal, verbose=verbose)
         self._heuristic = heuristic
         self._history['heuristic'] = str(self._heuristic.name)
 
-        self._open = []  # uses heapq
-        self._closed = []  # just a list
+        self._open = []
+        self._closed = []
 
         # setup beginning of search by assigning costs to start
         # and adding it to the open list
-        self._start.gcost = 0
-        self._start.hcost = self._heuristic.get_cost(self._start.state,
-                                                     self._goal.state)
-        self._start.fcost = self._start.gcost + self._start.hcost
-        self._start.parent = None
-        self._add_to_open(self._start)
+        hcost = self._heuristic.get_cost(self._start, self._goal)
+        start_node = SearchNode(self._start, 
+                                gcost=0, 
+                                hcost=hcost, 
+                                fcost=hcost, 
+                                parent=None)
+        self._add_to_open(start_node)
 
     def __repr__(self) -> str:
         rep = repr(super())
@@ -65,11 +124,18 @@ class GenericAstar(Search):
 
     @property
     def open(self):
+        """list of SearchNode: open list"""
         return self._open
+    
+    @property
+    def closed(self):
+         """list of SearchNode: closed list"""
+         return self._closed
 
     @property
     def heuristic(self):
-        return self._heuristic.name
+         """str: heuristic name."""
+         return self._heuristic.name
 
     def _add_to_open(self, node: SearchNode) -> None:
         heapq.heappush(self._open, node)
@@ -109,13 +175,25 @@ class GenericAstar(Search):
         return self._is_on_list_w_index(some_node, self._open)
 
     def step(self):
+        """step generator
+
+        Yields:
+            Tuple[SearchNode, List[SearchNode]]: A tuple of the node expanded and its
+                children that were added to the open list.
+
+        Example:
+
+            >>> print([repr(node) + ' ' + repr(to_open)) for node, to_open in astar.step()])
+            [SearchNode<...> [SearchNode<...>, SearchNode<...>, ...], ...]
+        """
+        while len(self._open) > 0:
             # if the open list is empty, then we have explored every state in
             # the env state space and have not found the goal.
             # Since A* is a "complete" search algorithm, which means that it will
             # find the goal if it exists and is 'reachable', so we can conclude a
             # path to the requested goal does not exist
-            # this forces a return -> StopIteration for this generator function
-        while len(self._open) > 0:
+            # this forces a return -> StopIteration for this generator function 
+
             # remove the lowest f-cost (ties to high g-cost) node from
             # the open list, add to closed
             node = self._remove_best()
@@ -128,7 +206,7 @@ class GenericAstar(Search):
             # f-cost node on the open list in order to prove its an optimal path.
             # Common mistake is to goal check when the node is generated by the
             # expansion of its parent.
-            if node == self.goal:
+            if node.state == self.goal:
                 self._success = True
                 # re-create path by following parents from goal to start
                 self._path.append(node.state)
@@ -170,8 +248,7 @@ class GenericAstar(Search):
 
                 # set costs according to A* algorithm
                 new_node.gcost += cost
-                new_node.hcost = self._heuristic.get_cost(new_node.state,
-                                                        self.goal.state)
+                new_node.hcost = self._heuristic.get_cost(new_node.state, self.goal)
                 new_node.fcost = new_node.gcost + new_node.hcost
 
                 is_on_open, index = self._is_on_open_w_index(new_node)
@@ -204,7 +281,16 @@ class GenericAstar(Search):
             yield node, to_open
         return
 
-    def get_path(self) -> List[SearchNode]:
+    def get_path(self) -> List[State]:
+        """get_path() executes the search from beginning to end. No other
+        method needs to be called after instantiation to complete a
+        successful search.
+
+        Returns:
+            List[State] where list is empty if search does not return
+                a path and full of connected nodes if a path was found.
+
+        """ 
         if self._verbose:
             print("Starting search...")
         for node, to_open in self.step():

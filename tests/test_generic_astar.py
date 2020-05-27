@@ -8,7 +8,6 @@ from sa_pathfinding.environments.grids.octile_grid import StateNotValidError
 from sa_pathfinding.heuristics.grid_heuristic import OctileGridHeuristic
 from sa_pathfinding.environments.grids.generics.grid  import GridState
 from sa_pathfinding.algorithms.astar.generic_astar import GenericAstar
-from sa_pathfinding.algorithms.generics.search_node import SearchNode
 from sa_pathfinding.environments.grids.octile_grid import OctileGrid
 from sa_pathfinding.environments.generics.env import Environment
 from sa_pathfinding.heuristics.heuristic import Heuristic
@@ -22,8 +21,8 @@ def get_random_search(environment: Environment=env,
     goal = environment.get_random(valid=True)
     gastar = GenericAstar(environment,
                                 heuristic, 
-                                start=SearchNode(start), 
-                                goal=SearchNode(goal))
+                                start=start, 
+                                goal=goal)
     return gastar
 
 
@@ -33,7 +32,7 @@ def test_invalid_goal():
     with pytest.raises(StateNotValidError):
         GenericAstar(env,
                     heuristic=OctileGridHeuristic(),
-                    goal=SearchNode(bad_goal))
+                    goal=bad_goal)
 
 
 def test_undefined_start():
@@ -44,22 +43,22 @@ def test_undefined_start():
     with pytest.raises(StateDoesNotExistError):
         GenericAstar(env,
                     heuristic=OctileGridHeuristic(),
-                    start=SearchNode(bad_start))
+                    start=bad_start)
     bad_start = GridState(env.get_random().x, -1)
     with pytest.raises(StateDoesNotExistError):
         GenericAstar(env,
                     heuristic=OctileGridHeuristic(),
-                    start=SearchNode(bad_start))
+                    start=bad_start)
     bad_start = GridState(env.width + 1, env.get_random().y)
     with pytest.raises(StateDoesNotExistError):
         GenericAstar(env,
                     heuristic=OctileGridHeuristic(),
-                    start=SearchNode(bad_start))
+                    start=bad_start)
     bad_start = GridState(env.get_random().x, env._height + 1)
     with pytest.raises(StateDoesNotExistError):
         GenericAstar(env,
                     heuristic=OctileGridHeuristic(),
-                    start=SearchNode(bad_start))
+                    start=bad_start)
 
 
 def test_undefined_goal():
@@ -70,22 +69,22 @@ def test_undefined_goal():
     with pytest.raises(StateDoesNotExistError):
         GenericAstar(env,
                     heuristic=OctileGridHeuristic(),
-                    goal=SearchNode(bad_goal))
+                    goal=bad_goal)
     bad_goal = GridState(env.get_random().x, -1)
     with pytest.raises(StateDoesNotExistError):
         GenericAstar(env,
                     heuristic=OctileGridHeuristic(),
-                    goal=SearchNode(bad_goal))
+                    goal=bad_goal)
     bad_goal = GridState(env.width + 1, env.get_random().y)
     with pytest.raises(StateDoesNotExistError):
         GenericAstar(env,
                     heuristic=OctileGridHeuristic(),
-                    goal=SearchNode(bad_goal))
+                    goal=bad_goal)
     bad_goal = GridState(env.get_random().x, env._height + 1)
     with pytest.raises(StateDoesNotExistError):
         GenericAstar(env,
                     heuristic=OctileGridHeuristic(),
-                    goal=SearchNode(bad_goal))
+                    goal=bad_goal)
 
 
 def test_simple_randomized_search():
@@ -112,8 +111,8 @@ def test_simple_shortest_search():
     goal = GridState(19, 24, valid=True)
     astar = GenericAstar(env,
                         heuristic=OctileGridHeuristic(),
-                        start=SearchNode(start),
-                        goal=SearchNode(goal))
+                        start=start,
+                        goal=goal)
     astar.get_path()
     print(astar.open)
     assert len(astar.path) == 2  # start, goal
@@ -127,7 +126,7 @@ def test_search_failure_invalid_goal():
     return no path.
     """
     gastar = get_random_search()
-    gastar._goal = SearchNode(env.get_random(valid=False))
+    gastar._goal = env.get_random(valid=False)
     assert len(gastar.get_path()) == 0
 
 def test_search_failure_undefined_goal():
@@ -137,7 +136,7 @@ def test_search_failure_undefined_goal():
     return no path.
     """
     gastar = get_random_search()
-    gastar._goal = SearchNode(GridState(-1, -1))
+    gastar._goal = GridState(-1, -1)
     assert len(gastar.get_path()) == 0
 
 def test_search_start_replaced():
@@ -151,7 +150,7 @@ def test_search_start_replaced():
     node with parent=None. This code change makes messing with _start after initialization pointless.
     """
     gastar = get_random_search()
-    gastar._start = SearchNode(env.get_random(valid=False))
+    gastar._start = env.get_random(valid=False)
     assert len(gastar.get_path()) > 0
 
 def test_history_on_success():
@@ -178,7 +177,7 @@ def test_history_on_failure():
     for a failed search. Checking keys are correct - not validating data.
     """
     gastar = get_random_search()
-    gastar._goal = SearchNode(GridState(-1, -1))
+    gastar._goal = GridState(-1, -1)
     gastar.get_path()
     assert 'start' in gastar.history
     assert 'goal' in gastar.history

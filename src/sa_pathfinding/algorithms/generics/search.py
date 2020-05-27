@@ -2,10 +2,10 @@ from abc import abstractmethod
 from typing import List
 from abc import ABC
 
-from sa_pathfinding.environments.generics.state import State
 from sa_pathfinding.environments.grids.octile_grid import StateNotValidError
 from sa_pathfinding.algorithms.generics.search_node import SearchNode
 from sa_pathfinding.environments.generics.env import Environment
+from sa_pathfinding.environments.generics.state import State
 
 # TODO(Nathan): Change start and goal in all searches to State, create the search node within the search
 
@@ -36,33 +36,33 @@ class Search(ABC):
 
     def __init__(self,
                  env: Environment,
-                 start: SearchNode = None,
-                 goal: SearchNode = None,
+                 start: State = None,
+                 goal: State = None,
                  verbose: bool = False) -> None:
         self._env = env
-        self._start = start
-        self._goal = goal
         self._verbose = verbose
         self._nodes_expanded = 0
         self._path = []
         self._success = None
+        self._start = None
+        self._goal = None
 
         if start is None:
             self._start = self._get_random_start()
-        elif self._env.is_valid(start.state):
+        elif self._env.is_valid(start):
             self._start = start
         else:
-            raise StateNotValidError(start.state)
+            raise StateNotValidError(start)
 
         if goal is None:
             self._goal = self._get_random_goal()
-        elif self._env.is_valid(goal.state):
+        elif self._env.is_valid(goal):
             self._goal = goal
         else:
-            raise StateNotValidError(goal.state)
+            raise StateNotValidError(goal)
 
-        self._history = {'start': repr(self._start.state),
-                        'goal': repr(self._goal.state),
+        self._history = {'start': repr(self._start),
+                        'goal': repr(self._goal),
                         'nodes_expanded': self._nodes_expanded,
                         'steps': {}}
 
@@ -75,23 +75,23 @@ class Search(ABC):
         pass
 
     @property
-    def start(self):
+    def start(self) -> State:
         return self._start
 
     @property
-    def goal(self):
+    def goal(self) -> State:
         return self._goal
 
     @property
-    def nodes_expanded(self):
+    def nodes_expanded(self) -> int:
         return self._nodes_expanded
 
     @property
-    def path(self):
+    def path(self) -> List[State]:
         return self._path
 
     @property
-    def verbose(self):
+    def verbose(self) -> bool:
         return self._verbose
     
     @property
@@ -99,23 +99,23 @@ class Search(ABC):
         return self._history
 
     @abstractmethod
-    def get_path(self) -> List[SearchNode]:
+    def get_path(self) -> List[State]:
         pass
 
-    def _get_random(self) -> SearchNode:
-        return SearchNode(self._env.get_random(valid=True))
+    def _get_random(self) -> State:
+        return self._env.get_random(valid=True)
 
-    def _get_random_diff(self, diff_state: State) -> SearchNode:
+    def _get_random_diff(self, diff_state: State) -> State:
         state = self._env.get_random()
         if diff_state is not None:
             while state == diff_state:
                 state = self._env.get_random()
-        return SearchNode(state)
+        return state
 
-    def _get_random_start(self) -> SearchNode:
-        return self._get_random_diff(self._goal.state) \
+    def _get_random_start(self) -> State:
+        return self._get_random_diff(self._goal) \
             if self._goal is not None else self._get_random()
 
-    def _get_random_goal(self) -> SearchNode:
-        return self._get_random_diff(self._start.state) \
+    def _get_random_goal(self) -> State:
+        return self._get_random_diff(self._start) \
             if self._start is not None else self._get_random()

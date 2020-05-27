@@ -2,7 +2,6 @@ import pytest
 import os
 
 from sa_pathfinding.environments.grids.generics.grid import GridState
-from sa_pathfinding.algorithms.generics.search_node import SearchNode
 from sa_pathfinding.environments.grids.octile_grid import OctileGrid
 from sa_pathfinding.algorithms.bfs.generic_bfs import GenericBFS
 
@@ -16,7 +15,7 @@ def test_simple_shortest_search():
     start = GridState(18, 24, valid=True)
     goal = GridState(19, 24, valid=True)
     astar = GenericBFS(env,
-                        start=SearchNode(start),
-                        goal=SearchNode(goal))
+                        start=start,
+                        goal=goal)
     astar.get_path()
     assert len(astar.path) == 2  # start, goal

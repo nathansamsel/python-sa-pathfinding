@@ -44,11 +44,10 @@ filepath = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__
 def main(argv=sys.argv):
   print('running...')
 
-  toh = TowersOfHanoi(4, 3)
-
-  dij = GenericBFS(toh, start=SearchNode(toh.start), goal=SearchNode(toh.goal))
-  dij.get_path()
-  print(dij.history)
+  astar = GenericDijkstra(OctileGrid('/Users/nathan/dev/python/python-sa-pathfinding/data/maps/small/den403d.map'))
+  path = astar.get_path()
+  print(path)
+  print('test')
 
   args = _parse_args()
   _execute_args(args)
