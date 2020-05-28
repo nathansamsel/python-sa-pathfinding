@@ -47,12 +47,6 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.org/project/sa-pathfinding
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/nathansamsel/python-sa-pathfinding/v0.1.svg
-    :alt: Commits since latest release
-    :target: https://github.com/nathansamsel/python-sa-pathfinding/compare/v0.1...master
-
-
-
 .. end-badges
 
 A python utility to execute single-agent searches on environments
