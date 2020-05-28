@@ -1,4 +1,4 @@
-sa-pathfinding
+sa_pathfinding
 ==============
 
 .. testsetup::
