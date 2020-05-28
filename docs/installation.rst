@@ -4,4 +4,4 @@ Installation
 
 At the command line::
 
-    pip install sa-pathfinding
+    pip install sa_pathfinding

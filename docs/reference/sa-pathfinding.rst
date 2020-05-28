@@ -3,7 +3,7 @@ sa-pathfinding
 
 .. testsetup::
 
-    from sa-pathfinding import *
+    from sa_pathfinding import *
 
-.. automodule:: sa-pathfinding
+.. automodule:: sa_pathfinding
     :members:
